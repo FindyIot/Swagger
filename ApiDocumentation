@@ -1,0 +1,848 @@
+swagger: "2.0"
+info:
+  version: "2.1.0"
+  title: "Server v 2.1 API"
+  contact:
+    email: "d@higps.org"
+host: "higps.org"
+basePath: "/server/RESTapi_V2/lib/"
+tags:
+- name: "login"
+  description: "Login is server"
+- name: "Device"
+  description: "Get device info by imei"
+- name: "Command"
+  description: "Send command"
+- name: "checkCommand"
+  description: "Check pennding command"
+- name: "Passport"
+  description: "Edit passport info"
+- name: "Search"
+  description: "Search for device by criteria"
+- name: "Alarm"
+  description: "Deleted alarm"
+- name: "GPSoff"
+  description: "Deleted GPSoff"
+- name: "SMS"
+  description: "Send SMS"
+- name: "Install"
+  description: "Install device"
+- name: "History"
+  description: "Get history device"
+- name: "Livetracking"
+  description: "Livetracking"
+- name: "GetItems"
+  description: "Get items (version,modes,devicestatus)"
+
+
+schemes:
+- "https"
+paths:
+  /user/login/:
+    post:
+      tags:
+      - "login"
+      summary: "Login in server"
+      description: "[[Mitko]]"
+      operationId: "Login"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add X-API-KEY:cinKW6ZnMcnPXCo13DOgXvDdDuZAcyrb
+        required: true
+        type: string
+      - in: "body"
+        name: "body"
+        description: "username,password"
+        required: true
+        schema:
+          $ref: "#/definitions/login"
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+
+  /device/{imei}:
+    get:
+      tags:
+      - "Device"
+      summary: "Get device by imei"
+      operationId: "GetDevice"
+
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      - in: "path"
+        required : true
+        name: imei
+        type: string
+
+      responses:
+        "405":
+          description: "Invalid input"
+        "404":
+          description: "Vehicle not found"
+        "403":
+          description: "Forbidden"
+        "401":
+          description: "Unauthorized"
+        "200":
+          description: "OK"
+    put:
+      tags:
+      - "Device"
+      summary: "Edit device info"
+      description: "[[Mitko]]"
+      operationId: "EditDevice"
+
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      - in: "body"
+        name: "body"
+        description: "Parameters "
+        required: true
+        schema:
+          $ref: "#/definitions/editDevice"
+      - in: "path"
+        required : true
+        name: imei
+        type: string
+      responses:
+        '400':
+          description: "Bad Request"
+        "403":
+          description: "Forbidden"
+        "404":
+          description: "Not Found"
+          
+    delete:
+      tags:
+      - "Device"
+      summary: "Delete device"
+      description: "[[Mitko]]"
+      operationId: "DeleteDevice"
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      - in: "path"
+        required : true
+        name: imei
+        type: string
+      responses:
+        "403":
+          description: "Forbidden"
+        '404':
+          description: "Not Found"
+        "200":
+          description: "OK"
+    
+  /device/{imei}/command:
+     post:
+      tags:
+      - "Command"
+      summary: "Send command"
+      description: "[[Mitko]]"
+      operationId: "set1"
+
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      - in: "body"
+        name: "body"
+        description: "Parameters "
+        required: true
+        schema:
+          $ref: "#/definitions/sendCommand"
+      - in: "path"
+        required : true
+        name: imei
+        type: string
+      
+      responses:
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        "200":
+          description: "OK"
+          
+     delete:
+      tags:
+      - "Command"
+      summary: "Deleted pending  command"
+      description: "[[Mitko]]"
+      operationId: "DeleteCommand"
+
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      - in: "body"
+        name: "requestID"
+        description: "Parameters "
+        required: true
+        schema:
+          $ref: "#/definitions/deletePendingCommand"
+      - in: "path"
+        required : true
+        name: imei
+        type: string
+      
+      responses:
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        "200":
+          description: "OK"
+          
+          
+  /device/checkPendingCommand/{requestID}:
+     get:
+      tags:
+      - "checkCommand"
+      summary: "Check pennding command"
+      description: "[[Mitko]]"
+      operationId: "CheckCommand"
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      - in: "path"
+        required : true
+        name: requestID
+        type: string
+      
+      responses:
+        '400':
+          description: Bad Request
+        '404':
+          description: Not Found
+        "200":
+          description: "true"
+
+  /passport/{imei}:
+     put:
+      tags:
+      - "Passport"
+      summary: "Edit passport info"
+      description: "[[Mitko]]"
+      operationId: "EditPassport"
+
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      - in: "body"
+        name: "deviceVersionID"
+        description: "Parameters "
+        required: true
+        schema:
+          $ref: "#/definitions/editDevicePassport"
+      - in: "path"
+        required : true
+        name: imei
+        type: string
+      responses:
+        '401':
+          description: Unauthorized
+        "403":
+          description: "Forbidden"
+        "200":
+          description: "OK"
+          
+        
+          
+  /device/checkChassis/123456:
+     get:
+      tags:
+      - "Install"
+      summary: "Check chasis on car"
+      description: "123456 is chasis name"
+      operationId: "CheckChasis"
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      responses:
+        "400":
+          description: "Bad Request"
+        '401':
+          description: "The chassis is busy"
+        "404":
+          description: "Not Found"
+        "200":
+          description: "OK" 
+          
+  /items:
+     put:
+      tags:
+      - "GetItems"
+      summary: "Get items (version,modes,devicestatus)"
+      description: "[[Mitko]]"
+      operationId: "AllItems"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      produces:
+      - "application/json"
+      responses:
+        '401':
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "200":
+          description: "OK" 
+          
+  /device/{imei}/alarm:
+     delete:
+      tags:
+      - "Alarm"
+      summary: "Deleted alarm"
+      description: "[[Mitko]]"
+      operationId: "DeleteAlarm"
+
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      - in: "path"
+        required : true
+        name: imei
+        type: string
+      responses:
+        '404':
+          description: "Not Found"
+        "200":
+          description: "OK"
+          
+  /device/{imei}/gpsOff:
+     delete:
+      tags:
+      - "GPSoff"
+      summary: "Deleted GPSoff"
+      description: "[[Mitko]]"
+      operationId: "DeleteGpsOff"
+
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      - in: "path"
+        required : true
+        name: imei
+        type: string
+      responses:
+        '404':
+          description: "Not Found"
+        "200":
+          description: "OK"
+          
+  /device/{imei}/sendSms:
+     post:
+      tags:
+      - "SMS"
+      summary: "Send SMS"
+      description: "[[Mitko]]"
+      operationId: "SendSMS"
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      - in: "path"
+        required : true
+        name: imei
+        type: string
+      responses:
+        '404':
+          description: "Not Found"
+        "200":
+          description: "OK"
+          
+  /device/{imei}/install:
+     post:
+      tags:
+      - "Install"
+      summary: "Install device"
+      description: "[[Mitko]]"
+      operationId: "InstallDevice"
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      - in: "body"
+        name: "plate,chasis"
+        description: "Parameters "
+        required: true
+        schema:
+          $ref: "#/definitions/install"
+      - in: "path"
+        required : true
+        name: imei
+        type: string
+      responses:
+        '404':
+          description: "Not Found"
+        "200":
+          description: "OK"
+        
+     delete:
+      tags:
+      - "Install"
+      summary: "Uninstall device"
+      description: "[[Mitko]]"
+      operationId: "UninstalDevice"
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      - in: "path"
+        required : true
+        name: imei
+        type: string
+      responses:
+        '404':
+          description: "Not Found"
+        "200":
+          description: "OK"
+          
+  /device/{imei}/livetracking:
+    post:
+      tags:
+      - "Livetracking"
+      summary: "Livetracking"
+      operationId: "StartLiveTracking"
+
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      - in: "path"
+        required : true
+        name: imei
+        type: string
+
+      responses:
+        "405":
+          description: "Invalid input"
+        "404":
+          description: "Vehicle not found"
+        "403":
+          description: "Forbidden"
+        "401":
+          description: "Unauthorized"
+        "200":
+          description: "OK"
+          
+    get:
+      tags:
+      - "Livetracking"
+      summary: "Get livetracking, return last 10 gps possition"
+      operationId: "GetLiveTracking"
+
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      - in: "path"
+        required : true
+        name: imei
+        type: string
+
+      responses:
+        "200":
+          description: "OK"
+    delete:
+      tags:
+      - "Livetracking"
+      summary: "Stop livetracking"
+      operationId: "DeleteLiveTracking"
+
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      - in: "path"
+        required : true
+        name: imei
+        type: string
+
+      responses:
+        "404":
+          description: "Not found"
+        "200":
+          description: "OK"
+          
+  /device/{imei}/history/2021-05-01 00:00:00/2021-09-30 00:00:00:
+     get:
+      tags:
+      - "History"
+      summary: "Get history by datetime"
+      description: "[[Mitko]]"
+      operationId: "History"
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      - in: "path"
+        required : true
+        name: imei
+        type: string
+      responses:
+        '401':
+          description: "Unauthorized"
+        "403":
+          description: "Forbidden"
+        "200":
+          description: "OK"
+          
+    
+  /search:
+     post:
+      tags:
+      - "Search"
+      summary: "Search for device by criteria"
+      description: "[[Mitko]]"
+      operationId: "Search"
+      produces:
+      - "application/json"
+      parameters:
+      - name: auth
+        in: header
+        description: add KEY:{Access token}
+        required: true
+        type: string
+      - in: "body"
+        name: "body"
+        description: "Parameters "
+        schema:
+          $ref: "#/definitions/searchDevice"
+      responses:
+        '401':
+          description: Unauthorized
+        "403":
+          description: "Forbidden"
+        "200":
+          description: "OK"
+      
+          
+securityDefinitions:
+  api_key: 
+    type: "apiKey"
+    name: "X-API-KEY"
+    in: "header"
+    
+    
+definitions:
+  login:
+    type: "object"
+    required:
+    - "username"
+#    - "photoUrls"
+    properties:
+      username:
+        type: "string"
+        format: "int64"
+        example: "admin"
+      password:
+        type: "string"
+        format: "int64"
+        example: "123456789"
+        
+  deletePendingCommand:
+    type: "object"
+    properties:
+      requestID:
+        type: "integer"
+        format: "int64"
+        example: "1234567"
+  
+        
+  install:
+    type: "object"
+    properties:
+      plate:
+        type: "string"
+        format: "int64"
+        example: "CB0007PK"
+      chasis:
+        type: "string"
+        format: "int64"
+        example: "NV123456789"
+      brand:
+        type: "string"
+        format: "int64"
+        example: "opel"
+      model:
+        type: "string"
+        format: "int64"
+        example: "kadet"
+      version:
+        type: "string"
+        format: "int64"
+        example: "kapka"
+      color:
+        type: "string"
+        format: "int64"
+        example: "red"
+      note:
+        type: "string"
+        format: "int64"
+        example: "info comment"
+       
+  sendCommand:
+    type: "object"
+#    required:
+#    - "name"
+#    - "photoUrls"
+    properties:
+      body:
+        type: "string"
+        format: "int64"
+        example: "*string$"
+      commandId:
+        type: "string"
+        format: "int64"
+        example: "GPRS"
+      statusId:
+        type: "integer"
+        format: "int64"
+        example: "1"
+      via:
+        type: "string"
+        format: "int64"
+        example: "gprs"
+        
+  editDevicePassport:
+    type: "object"
+    # required:
+    # - "imei"
+    # - "photoUrls"
+    properties:
+      transmitter:
+        type: "string"
+        format: "int64"
+        example: "1"
+      deviceVersionID:
+        type: "integer"
+        format: "int64"
+        example: "1"
+      batteryType:
+        type: "string"
+        format: "int64"
+        example: "LI-PO"
+      prefix:
+        type: "string"
+        format: "int64"
+        example: "%23"
+      phone:
+        type: "string"
+        format: "int64"
+        example: "088"
+        
+  editCar:
+    type: "object"
+#    required:
+#    - "name"
+#    - "photoUrls"
+    properties:
+      plate:
+        type: "string"
+        format: "int64"
+        example: "CB0007PK"
+      chasis:
+        type: "string"
+        format: "int64"
+        example: "NV123456789"
+      brand:
+        type: "string"
+        format: "int64"
+        example: "opel"
+      model:
+        type: "string"
+        format: "int64"
+        example: "kadet"
+      version:
+        type: "string"
+        format: "int64"
+        example: "kapka"
+      color:
+        type: "string"
+        format: "int64"
+        example: "red"
+      note:
+        type: "string"
+        format: "int64"
+        example: "info comment"
+        
+        
+  editDevice:
+    type: "object"
+    # required:
+    # - "imei"
+    # - "photoUrls"
+    properties:
+      deviceOwnerID:
+        type: "integer"
+        format: "int64"
+        example: "1"
+      deviceGroupID:
+        type: "integer"
+        format: "int64"
+        example: "1"
+        
+  searchDevice:
+    properties:
+      imei:
+        type: "string"
+        format: "int64"
+        example: "12345678"
+      name:
+        type: "string"
+        format: "int64"
+        example: "FC000003"
+      deviceOwnerID:
+        type: "string"
+        format: "int64"
+        example: "admin"
+      groupID:
+        type: "integer"
+        format: "int64"
+        example: "1"
+      deviceVersionID:
+        type: "integer"
+        format: "int64"
+        example: "1"
+      lastReport:
+        type: "object"
+        properties:
+          date:
+            type: "string"
+            format: "int64"
+            example: "2021-09-20T21:00:00.000Z"
+          operator:
+            type: "string"
+            format: "int64"
+            example: "<,=,>"
+      batteryLevel:
+        type: "object"
+        properties:
+          value:
+            type: "integer"
+            format: "int64"
+            example: "0-100"
+          operator:
+            type: "string"
+            format: "int64"
+            example: "<,=,>"
+      car:
+        type: "object"
+        properties:
+          plate:
+            type: "string"
+            format: "int64"
+            example: "CB0007PK"
+          chasis:
+            type: "string"
+            format: "int64"
+            example: "NV123456789"
+          brand:
+            type: "string"
+            format: "int64"
+            example: "opel"
+          model:
+            type: "string"
+            format: "int64"
+            example: "kadet"
+      
+
+
+
+
+
+  
